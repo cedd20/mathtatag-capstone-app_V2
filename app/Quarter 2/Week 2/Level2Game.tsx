@@ -38,15 +38,15 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   
   // Individual animations for each element
   const elementAnimations = useRef<{[key: number]: Animated.Value}>({
-    1: new Animated.Value(1), // Steps
-    2: new Animated.Value(1), // Apple
-    3: new Animated.Value(1), // Vase
-    4: new Animated.Value(1), // Bear
+    1: new Animated.Value(1), // Rocks
+    2: new Animated.Value(1), // Books
+    3: new Animated.Value(1), // Feathers
+    4: new Animated.Value(1), // Balloons
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -58,9 +58,9 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/steps.png'),
-      name: 'Mga hakbang',
-      emoji: '👣'
+      image: require('../../../assets/Quarter 2/Week 1/steps.png'), // Using Week 1 assets as placeholder
+      name: 'Mga bato',
+      emoji: '🪨'
     },
     {
       id: 2,
@@ -69,9 +69,9 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/apple.png'),
-      name: 'Mansanas',
-      emoji: '🍎'
+      image: require('../../../assets/Quarter 2/Week 1/apple.png'), // Using Week 1 assets as placeholder
+      name: 'Mga libro',
+      emoji: '📚'
     },
     {
       id: 3,
@@ -80,9 +80,9 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/vase.png'),
-      name: 'Asin sa bote',
-      emoji: '🏺'
+      image: require('../../../assets/Quarter 2/Week 1/vase.png'), // Using Week 1 assets as placeholder
+      name: 'Mga balahibo',
+      emoji: '🪶'
     },
     {
       id: 4,
@@ -91,15 +91,15 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/bear.png'),
-      name: 'Stuff toy',
-      emoji: '🧸'
+      image: require('../../../assets/Quarter 2/Week 1/bear.png'), // Using Week 1 assets as placeholder
+      name: 'Mga lobo',
+      emoji: '🎈'
     }
   ], []);
 
   const [elements, setElements] = useState<ElementData[]>(defaultElements);
 
-  const correctAnswer = 1; // Steps are the best for measuring length
+  const correctAnswer = 1; // Rocks are the best for measuring weight
 
   // Load saved layout on component mount
   useEffect(() => {
@@ -114,7 +114,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   const startElementAnimations = useCallback(() => {
     // Create a sequence of animations for each element
     const animations = [
-      // Steps animation - gentle bounce
+      // Element 1 animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[1], {
@@ -130,7 +130,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Apple animation - subtle pulse
+      // Element 2 animation - subtle pulse
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[2], {
@@ -146,7 +146,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Vase animation - gentle sway
+      // Element 3 animation - gentle sway
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[3], {
@@ -162,7 +162,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Bear animation - gentle bounce
+      // Element 4 animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[4], {
@@ -344,9 +344,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
     });
   };
 
-
   const handleElementPress = (elementId: number) => {
-    
     // Stop the element's animation and add click animation
     if (elementAnimations[elementId]) {
       elementAnimations[elementId].stopAnimation();
@@ -461,7 +459,6 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   };
 
   const adjustElementSize = (elementId: number, direction: 'increase' | 'decrease') => {
-    
     setElements(prev => prev.map(element => 
       element.id === elementId 
         ? {
@@ -479,7 +476,6 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         : element
     ));
   };
-
 
   const startQuestion = useCallback(() => {
     setShowQuestion(true);
@@ -520,7 +516,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       };
       
       // Save to AsyncStorage permanently
-      await AsyncStorage.setItem('level2_layout', JSON.stringify(layoutData));
+      await AsyncStorage.setItem('week2_level2_layout', JSON.stringify(layoutData));
       console.log('Layout saved permanently:', layoutData);
       alert('Layout saved permanently!');
     } catch (error) {
@@ -532,7 +528,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   const loadSavedLayout = async () => {
     try {
       // Try to load saved layout from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level2_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level2_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -553,7 +549,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   const loadLayout = async () => {
     try {
       // Load from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level2_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level2_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -570,9 +566,9 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         const defaultLayout = {
           elements: [
             { id: 1, x: 50, y: 200, width: 80, height: 80, scale: 1 },
-            { id: 2, x: 200, y: 200, width: 100, height: 80, scale: 1 },
-            { id: 3, x: 350, y: 200, width: 70, height: 80, scale: 1 },
-            { id: 4, x: 150, y: 350, width: 120, height: 100, scale: 1 }
+            { id: 2, x: 200, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 3, x: 350, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 4, x: 150, y: 350, width: 80, height: 80, scale: 1 }
           ]
         };
         
@@ -591,7 +587,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
 
   const clearSavedLayout = async () => {
     try {
-      await AsyncStorage.removeItem('level2_layout');
+      await AsyncStorage.removeItem('week2_level2_layout');
       console.log('Saved layout cleared');
       alert('Saved layout cleared!');
     } catch (error) {
@@ -604,22 +600,22 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel2.png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel2.png')} // Placeholder - will be updated with Week 2 assets
       style={styles.container} 
       resizeMode="cover"
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Level 2: Panukat ng Haba ng Lamesa</Text>
+        <Text style={styles.title}>Level 2: Panukat ng Bigat ng Kahon</Text>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            Gusto sukatin ni Miko ang haba ng kanilang lamesa, pero wala siyang ruler.
+            Gusto sukatin ni Miko ang bigat ng kanilang kahon, pero wala siyang timbangan.
           </Text>
           <Text style={styles.question}>
-            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng haba ng lamesa?
+            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng bigat ng kahon?
           </Text>
           <Pressable style={styles.startButton} onPress={startQuestion}>
             <Text style={styles.startButtonText}>Simulan ang Tanong</Text>
@@ -628,7 +624,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
       ) : (
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng haba ng lamesa?
+            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng bigat ng kahon?
           </Text>
           <Text style={styles.choicesText}>Pagpipilian:</Text>
         </View>
@@ -649,7 +645,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
                 zIndex: selectedElement === element.id ? 1000 : 1,
               }
             ]}
-{...debugMode ? createPanResponder(element.id).panHandlers : {}}
+            {...debugMode ? createPanResponder(element.id).panHandlers : {}}
           >
             <Pressable
               style={[
@@ -662,6 +658,7 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -721,8 +718,8 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
           </Text>
           <Text style={styles.resultExplanation}>
             {isCorrect 
-              ? 'Tama! Ang mga hakbang ang pinakamainam gamitin bilang panukat ng haba ng lamesa.'
-              : 'Ang mga hakbang ang pinakamainam gamitin bilang panukat ng haba ng lamesa.'
+              ? 'Tama! This is the correct answer.'
+              : 'This is the correct answer.'
             }
           </Text>
           <Pressable style={styles.nextButton} onPress={finishGame}>
@@ -731,14 +728,13 @@ const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
         </Animated.View>
       )}
 
-
       {/* Settings Button */}
       <Pressable 
         style={styles.settingsButton} 
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />
@@ -929,7 +925,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // Removed selectedElement style - no blue border on selection
   disabledElement: {
     opacity: 0.6,
   },

@@ -194,7 +194,7 @@ export default function TeacherLogin() {
               onPress={() => setShowPassword(!showPassword)}
             >
               <AntDesign
-                name={showPassword ? 'eyeo' : 'eyeo'}
+                name={showPassword ? 'eye' : 'eye-invisible'}
                 size={20}
                 color="#888"
               />

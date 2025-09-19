@@ -675,7 +675,7 @@ export default function AdminDashboard() {
                   </View>
                   
                   <Text style={[styles.ttsNote, { fontSize: isSmallScreen ? 10 : 12 }]}>
-                    💡 Ang boses ay magdadagdag ng "Kumusta!" at gagamit ng tunay na Filipino accent na madaling maintindihan ng mga batang hindi marunong mag-English. Mabagal at malinaw ang pagbigkas.
+                    💡 Ang boses ay magdadagdag ng &quot;Kumusta!&quot; at gagamit ng tunay na Filipino accent na madaling maintindihan ng mga batang hindi marunong mag-English. Mabagal at malinaw ang pagbigkas.
                   </Text>
                 </View>
               </View>

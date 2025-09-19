@@ -5,7 +5,7 @@ import { Animated, Dimensions, Image, ImageBackground, PanResponder, Pressable, 
 
 const { width, height } = Dimensions.get('window');
 
-interface Level6GameProps {
+interface Level2GameProps {
   onComplete: (score: number) => void;
   onExit: () => void;
 }
@@ -23,8 +23,7 @@ interface ElementData {
   isSelected?: boolean;
 }
 
-const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
-  // Optimized state management
+const Level2Game: React.FC<Level2GameProps> = ({ onComplete, onExit }) => {
   const [score, setScore] = useState(0);
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -35,19 +34,19 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState<string | null>(null);
   
-  // Optimized animation values
   const scaleAnim = useRef(new Animated.Value(1)).current;
   
-  // Optimized animation values
+  // Individual animations for each element
   const elementAnimations = useRef<{[key: number]: Animated.Value}>({
-    1: new Animated.Value(1), // Ken (4 tiles)
-    2: new Animated.Value(1), // Blessie (7 tiles)
-    3: new Animated.Value(1), // Marga (9 tiles)
+    1: new Animated.Value(1), // Steps
+    2: new Animated.Value(1), // Apple
+    3: new Animated.Value(1), // Vase
+    4: new Animated.Value(1), // Bear
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -57,39 +56,50 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
       x: 50,
       y: 200,
       width: 80,
-      height: 100,
+      height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/Ken.png'),
-      name: 'Ken',
-      emoji: '🟫🟫🟫🟫'
+      image: require('../../../assets/Quarter 2/Week 1/steps.png'),
+      name: 'Mga hakbang',
+      emoji: '👣'
     },
     {
       id: 2,
       x: 200,
       y: 200,
       width: 80,
-      height: 100,
+      height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/Blessie.png'),
-      name: 'Blessie',
-      emoji: '🟫🟫🟫🟫🟫🟫🟫'
+      image: require('../../../assets/Quarter 2/Week 1/apple.png'),
+      name: 'Mansanas',
+      emoji: '🍎'
     },
     {
       id: 3,
       x: 350,
       y: 200,
       width: 80,
-      height: 100,
+      height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/Marga.png'),
-      name: 'Marga',
-      emoji: '🟫🟫🟫🟫🟫🟫🟫🟫🟫'
+      image: require('../../../assets/Quarter 2/Week 1/vase.png'),
+      name: 'Asin sa bote',
+      emoji: '🏺'
+    },
+    {
+      id: 4,
+      x: 150,
+      y: 350,
+      width: 80,
+      height: 80,
+      scale: 1,
+      image: require('../../../assets/Quarter 2/Week 1/bear.png'),
+      name: 'Stuff toy',
+      emoji: '🧸'
     }
   ], []);
 
   const [elements, setElements] = useState<ElementData[]>(defaultElements);
 
-  const correctAnswer = 3; // Marga walked the farthest (9 tiles)
+  const correctAnswer = 1; // Steps are the best for measuring length
 
   // Load saved layout on component mount
   useEffect(() => {
@@ -101,11 +111,10 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
     startElementAnimations();
   }, []);
 
-  // Optimized element animations with cleanup
   const startElementAnimations = useCallback(() => {
     // Create a sequence of animations for each element
     const animations = [
-      // Ken animation - gentle bounce
+      // Steps animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[1], {
@@ -121,7 +130,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Blessie animation - subtle pulse
+      // Apple animation - subtle pulse
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[2], {
@@ -137,7 +146,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Marga animation - gentle sway
+      // Vase animation - gentle sway
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[3], {
@@ -152,6 +161,22 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
           }),
         ])
       ),
+      
+      // Bear animation - gentle bounce
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(elementAnimations[4], {
+            toValue: 1.06,
+            duration: 1600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(elementAnimations[4], {
+            toValue: 1,
+            duration: 1600,
+            useNativeDriver: true,
+          }),
+        ])
+      ),
     ];
 
     // Start all animations with slight delays
@@ -160,9 +185,8 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
         animation.start();
       }, index * 500); // Stagger the start times
     });
-  }, []);
+  }, [elementAnimations]);
 
-  // Optimized PanResponder creation with useCallback
   const createPanResponder = useCallback((elementId: number) => {
     return PanResponder.create({
       onStartShouldSetPanResponder: () => debugMode, // Only allow dragging in debug mode
@@ -384,6 +408,21 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
               }),
             ])
           ).start();
+        } else if (elementId === 4) {
+          Animated.loop(
+            Animated.sequence([
+              Animated.timing(elementAnimations[4], {
+                toValue: 1.06,
+                duration: 1600,
+                useNativeDriver: true,
+              }),
+              Animated.timing(elementAnimations[4], {
+                toValue: 1,
+                duration: 1600,
+                useNativeDriver: true,
+              }),
+            ])
+          ).start();
         }
       });
     }
@@ -442,7 +481,6 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
   };
 
 
-  // Optimized handlers with useCallback
   const startQuestion = useCallback(() => {
     setShowQuestion(true);
   }, []);
@@ -455,7 +493,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
     onExit();
   }, [onExit]);
 
-  const retryGame = () => {
+  const retryGame = useCallback(() => {
     setScore(0);
     setSelectedElement(null);
     setShowResult(false);
@@ -463,43 +501,9 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
     setShowQuestion(false);
     setShowSettings(false);
     
-    // Reset elements to original positions
-    setElements([
-      {
-        id: 1,
-        x: 50,
-        y: 200,
-        width: 80,
-        height: 100,
-        scale: 1,
-        image: require('../../assets/Week 1/Ken.png'),
-        name: 'Ken',
-        emoji: '🟫🟫🟫🟫'
-      },
-      {
-        id: 2,
-        x: 200,
-        y: 200,
-        width: 80,
-        height: 100,
-        scale: 1,
-        image: require('../../assets/Week 1/Blessie.png'),
-        name: 'Blessie',
-        emoji: '🟫🟫🟫🟫🟫🟫🟫'
-      },
-      {
-        id: 3,
-        x: 350,
-        y: 200,
-        width: 80,
-        height: 100,
-        scale: 1,
-        image: require('../../assets/Week 1/Marga.png'),
-        name: 'Marga',
-        emoji: '🟫🟫🟫🟫🟫🟫🟫🟫🟫'
-      }
-    ]);
-  };
+    // Reset elements to original positions using memoized defaultElements
+    setElements(defaultElements);
+  }, [defaultElements]);
 
   const saveLayout = async () => {
     try {
@@ -516,7 +520,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
       };
       
       // Save to AsyncStorage permanently
-      await AsyncStorage.setItem('level6_layout', JSON.stringify(layoutData));
+      await AsyncStorage.setItem('level2_layout', JSON.stringify(layoutData));
       console.log('Layout saved permanently:', layoutData);
       alert('Layout saved permanently!');
     } catch (error) {
@@ -528,7 +532,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
   const loadSavedLayout = async () => {
     try {
       // Try to load saved layout from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level6_layout');
+      const savedLayout = await AsyncStorage.getItem('level2_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -549,7 +553,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
   const loadLayout = async () => {
     try {
       // Load from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level6_layout');
+      const savedLayout = await AsyncStorage.getItem('level2_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -587,7 +591,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
 
   const clearSavedLayout = async () => {
     try {
-      await AsyncStorage.removeItem('level6_layout');
+      await AsyncStorage.removeItem('level2_layout');
       console.log('Saved layout cleared');
       alert('Saved layout cleared!');
     } catch (error) {
@@ -600,22 +604,22 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel6.png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel2.png')} 
       style={styles.container} 
       resizeMode="cover"
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Level 6: Sino ang Mas Malayo ang Nilakad?</Text>
+        <Text style={styles.title}>Level 2: Panukat ng Haba ng Lamesa</Text>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            Sila Ken, Blessie, at Marga ay papunta sa pinto para lumabas at maglaro. Gumamit sila ng tiles bilang panukat ng nilakad nila.
+            Gusto sukatin ni Miko ang haba ng kanilang lamesa, pero wala siyang ruler.
           </Text>
           <Text style={styles.question}>
-            Tingnan ang bilang ng mga tiles na nilakad nila. Sino ang mas malayo ang nilakad papunta sa pinto?
+            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng haba ng lamesa?
           </Text>
           <Pressable style={styles.startButton} onPress={startQuestion}>
             <Text style={styles.startButtonText}>Simulan ang Tanong</Text>
@@ -624,7 +628,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
       ) : (
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            Tingnan ang bilang ng mga tiles na nilakad nila. Sino ang mas malayo ang nilakad papunta sa pinto?
+            Alin sa mga bagay na ito ang pinakamainam gamitin bilang panukat ng haba ng lamesa?
           </Text>
           <Text style={styles.choicesText}>Pagpipilian:</Text>
         </View>
@@ -658,6 +662,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -717,8 +722,8 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
           </Text>
           <Text style={styles.resultExplanation}>
             {isCorrect 
-              ? 'Tama! Si Marga ang mas malayo ang nilakad dahil siya ay nakalakad ng 9 na tiles.'
-              : 'Si Marga ang mas malayo ang nilakad dahil siya ay nakalakad ng 9 na tiles.'
+              ? 'Tama! Ang mga hakbang ang pinakamainam gamitin bilang panukat ng haba ng lamesa.'
+              : 'Ang mga hakbang ang pinakamainam gamitin bilang panukat ng haba ng lamesa.'
             }
           </Text>
           <Pressable style={styles.nextButton} onPress={finishGame}>
@@ -734,7 +739,7 @@ const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />
@@ -1189,4 +1194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Level6Game;
+export default Level2Game;

@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { get, ref } from 'firebase/database';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Dimensions, ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../constants/firebaseConfig';
@@ -107,7 +107,7 @@ export default function AdminLogin() {
                 placeholderTextColor="#aaa"
               />
               <TouchableOpacity onPress={() => setShowPassword(v => !v)} style={{ padding: 6, marginRight: 8 }}>
-                <AntDesign name={showPassword ? 'eye' : 'eyeo'} size={22} color="#27ae60" />
+                <AntDesign name={showPassword ? 'eye' : 'eye-invisible'} size={22} color="#27ae60" />
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, alignSelf: 'flex-start' }}>

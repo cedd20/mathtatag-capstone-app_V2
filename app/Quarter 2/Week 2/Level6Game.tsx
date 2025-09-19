@@ -5,7 +5,7 @@ import { Animated, Dimensions, Image, ImageBackground, PanResponder, Pressable, 
 
 const { width, height } = Dimensions.get('window');
 
-interface Level1GameProps {
+interface Level6GameProps {
   onComplete: (score: number) => void;
   onExit: () => void;
 }
@@ -23,7 +23,7 @@ interface ElementData {
   isSelected?: boolean;
 }
 
-const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
+const Level6Game: React.FC<Level6GameProps> = ({ onComplete, onExit }) => {
   const [score, setScore] = useState(0);
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -38,14 +38,15 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   
   // Individual animations for each element
   const elementAnimations = useRef<{[key: number]: Animated.Value}>({
-    1: new Animated.Value(1), // Lapis
-    2: new Animated.Value(1), // Ruler
-    3: new Animated.Value(1), // Gunting
+    1: new Animated.Value(1), // Element 1
+    2: new Animated.Value(1), // Element 2
+    3: new Animated.Value(1), // Element 3
+    4: new Animated.Value(1), // Element 4
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -57,48 +58,48 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/lapis.png'),
-      name: 'Lapis',
-      emoji: '✏️'
+      image: require('../../../assets/Quarter 2/Week 1/p3.png'), // Placeholder - will be updated with Week 2 assets
+      name: 'Element 1',
+      emoji: '🔵'
     },
     {
       id: 2,
       x: 200,
       y: 200,
-      width: 100,
+      width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/ruler.png'),
-      name: 'Ruler',
-      emoji: '📏'
+      image: require('../../../assets/Quarter 2/Week 1/p2.png'), // Placeholder - will be updated with Week 2 assets
+      name: 'Element 2',
+      emoji: '🔴'
     },
     {
       id: 3,
       x: 350,
       y: 200,
-      width: 70,
+      width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/gunting.png'),
-      name: 'Gunting',
-      emoji: '✂️'
+      image: require('../../../assets/Quarter 2/Week 1/p4.png'), // Placeholder - will be updated with Week 2 assets
+      name: 'Element 3',
+      emoji: '🟡'
     },
     {
       id: 4,
       x: 150,
       y: 350,
-      width: 120,
-      height: 100,
+      width: 80,
+      height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/pot.png'),
-      name: 'Pot',
-      emoji: '🏺'
+      image: require('../../../assets/Quarter 2/Week 1/p5.png'), // Placeholder - will be updated with Week 2 assets
+      name: 'Element 4',
+      emoji: '🟢'
     }
   ], []);
 
   const [elements, setElements] = useState<ElementData[]>(defaultElements);
 
-  const correctAnswer = 2; // Ruler is the longest
+  const correctAnswer = 4; // Placeholder - will be updated with actual correct answer
 
   // Load saved layout on component mount
   useEffect(() => {
@@ -113,7 +114,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   const startElementAnimations = useCallback(() => {
     // Create a sequence of animations for each element
     const animations = [
-      // Lapis animation - gentle bounce
+      // Element 1 animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[1], {
@@ -129,7 +130,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Ruler animation - subtle pulse
+      // Element 2 animation - subtle pulse
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[2], {
@@ -145,7 +146,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Gunting animation - gentle sway
+      // Element 3 animation - gentle sway
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[3], {
@@ -156,6 +157,22 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
           Animated.timing(elementAnimations[3], {
             toValue: 1,
             duration: 1800,
+            useNativeDriver: true,
+          }),
+        ])
+      ),
+      
+      // Element 4 animation - gentle bounce
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(elementAnimations[4], {
+            toValue: 1.06,
+            duration: 1600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(elementAnimations[4], {
+            toValue: 1,
+            duration: 1600,
             useNativeDriver: true,
           }),
         ])
@@ -172,8 +189,8 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
 
   const createPanResponder = useCallback((elementId: number) => {
     return PanResponder.create({
-      onStartShouldSetPanResponder: () => debugMode && elementId !== 4, // Only allow dragging in debug mode, exclude pot
-      onMoveShouldSetPanResponder: () => debugMode && elementId !== 4, // Only allow dragging in debug mode, exclude pot
+      onStartShouldSetPanResponder: () => debugMode, // Only allow dragging in debug mode
+      onMoveShouldSetPanResponder: () => debugMode, // Only allow dragging in debug mode
       onPanResponderGrant: () => {
         if (!debugMode) return; // Exit if not in debug mode
         
@@ -226,7 +243,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
                 width: newWidth,
                 height: newHeight,
                 x: Math.max(0, Math.min(width - newWidth, newX)),
-                y: Math.max(0, Math.min(height - newHeight - 200, newY))
+                y: Math.max(0, Math.min(height - newHeight - 50, newY))
               };
             }
             return element;
@@ -238,7 +255,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
               ? {
                   ...element,
                   x: Math.max(0, Math.min(width - element.width, element.x + gestureState.dx)),
-                  y: Math.max(0, Math.min(height - element.height - 200, element.y + gestureState.dy))
+                  y: Math.max(0, Math.min(height - element.height - 50, element.y + gestureState.dy))
                 }
               : element
           ));
@@ -262,8 +279,8 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
 
   const createResizePanResponder = (elementId: number, handle: string) => {
     return PanResponder.create({
-      onStartShouldSetPanResponder: () => debugMode && elementId !== 4, // Only allow resizing in debug mode, exclude pot
-      onMoveShouldSetPanResponder: () => debugMode && elementId !== 4, // Only allow resizing in debug mode, exclude pot
+      onStartShouldSetPanResponder: () => debugMode, // Only allow resizing in debug mode
+      onMoveShouldSetPanResponder: () => debugMode, // Only allow resizing in debug mode
       onPanResponderGrant: (evt) => {
         if (!debugMode) return; // Exit if not in debug mode
         
@@ -311,7 +328,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
               width: newWidth,
               height: newHeight,
               x: Math.max(0, Math.min(width - newWidth, newX)),
-              y: Math.max(0, Math.min(height - newHeight - 200, newY))
+              y: Math.max(0, Math.min(height - newHeight - 50, newY))
             };
           }
           return element;
@@ -327,11 +344,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
     });
   };
 
-
   const handleElementPress = (elementId: number) => {
-    // Pot (id: 4) is always fixed and unclickable
-    if (elementId === 4) return;
-    
     // Stop the element's animation and add click animation
     if (elementAnimations[elementId]) {
       elementAnimations[elementId].stopAnimation();
@@ -393,6 +406,21 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
               }),
             ])
           ).start();
+        } else if (elementId === 4) {
+          Animated.loop(
+            Animated.sequence([
+              Animated.timing(elementAnimations[4], {
+                toValue: 1.06,
+                duration: 1600,
+                useNativeDriver: true,
+              }),
+              Animated.timing(elementAnimations[4], {
+                toValue: 1,
+                duration: 1600,
+                useNativeDriver: true,
+              }),
+            ])
+          ).start();
         }
       });
     }
@@ -422,7 +450,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
         }),
       ]).start();
     }
-    // In debug mode, allow element selection for editing (except pot)
+    // In debug mode, allow element selection for editing
     else if (debugMode) {
       setSelectedElement(elementId);
       setElements(prev => prev.map(el => ({ ...el, isSelected: el.id === elementId })));
@@ -431,9 +459,6 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   };
 
   const adjustElementSize = (elementId: number, direction: 'increase' | 'decrease') => {
-    // Pot (id: 4) is fixed and cannot be resized
-    if (elementId === 4) return;
-    
     setElements(prev => prev.map(element => 
       element.id === elementId 
         ? {
@@ -452,7 +477,6 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
     ));
   };
 
-
   const startQuestion = useCallback(() => {
     setShowQuestion(true);
   }, []);
@@ -465,7 +489,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
     onExit();
   }, [onExit]);
 
-  const retryGame = useCallback(() => {
+  const retryGame = () => {
     setScore(0);
     setSelectedElement(null);
     setShowResult(false);
@@ -473,9 +497,54 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
     setShowQuestion(false);
     setShowSettings(false);
     
-    // Reset elements to original positions using memoized defaultElements
-    setElements(defaultElements);
-  }, [defaultElements]);
+    // Reset elements to original positions
+    setElements([
+      {
+        id: 1,
+        x: 50,
+        y: 200,
+        width: 80,
+        height: 80,
+        scale: 1,
+        image: require('../../../assets/Quarter 2/Week 1/p3.png'),
+        name: 'Element 1',
+        emoji: '🔵'
+      },
+      {
+        id: 2,
+        x: 200,
+        y: 200,
+        width: 80,
+        height: 80,
+        scale: 1,
+        image: require('../../../assets/Quarter 2/Week 1/p2.png'),
+        name: 'Element 2',
+        emoji: '🔴'
+      },
+      {
+        id: 3,
+        x: 350,
+        y: 200,
+        width: 80,
+        height: 80,
+        scale: 1,
+        image: require('../../../assets/Quarter 2/Week 1/p4.png'),
+        name: 'Element 3',
+        emoji: '🟡'
+      },
+      {
+        id: 4,
+        x: 150,
+        y: 350,
+        width: 80,
+        height: 80,
+        scale: 1,
+        image: require('../../../assets/Quarter 2/Week 1/p5.png'),
+        name: 'Element 4',
+        emoji: '🟢'
+      }
+    ]);
+  };
 
   const saveLayout = async () => {
     try {
@@ -492,7 +561,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
       };
       
       // Save to AsyncStorage permanently
-      await AsyncStorage.setItem('level1_layout', JSON.stringify(layoutData));
+      await AsyncStorage.setItem('week2_level6_layout', JSON.stringify(layoutData));
       console.log('Layout saved permanently:', layoutData);
       alert('Layout saved permanently!');
     } catch (error) {
@@ -504,7 +573,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   const loadSavedLayout = async () => {
     try {
       // Try to load saved layout from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level1_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level6_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -525,7 +594,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   const loadLayout = async () => {
     try {
       // Load from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level1_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level6_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -542,9 +611,9 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
         const defaultLayout = {
           elements: [
             { id: 1, x: 50, y: 200, width: 80, height: 80, scale: 1 },
-            { id: 2, x: 200, y: 200, width: 100, height: 80, scale: 1 },
-            { id: 3, x: 350, y: 200, width: 70, height: 80, scale: 1 },
-            { id: 4, x: 150, y: 350, width: 120, height: 100, scale: 1 }
+            { id: 2, x: 200, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 3, x: 350, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 4, x: 150, y: 350, width: 80, height: 80, scale: 1 }
           ]
         };
         
@@ -563,7 +632,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
 
   const clearSavedLayout = async () => {
     try {
-      await AsyncStorage.removeItem('level1_layout');
+      await AsyncStorage.removeItem('week2_level6_layout');
       console.log('Saved layout cleared');
       alert('Saved layout cleared!');
     } catch (error) {
@@ -576,22 +645,22 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel1 (2).png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel6.png')} // Placeholder - will be updated with Week 2 assets
       style={styles.container} 
       resizeMode="cover"
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Level 1: Alin ang Pinakamahabang Gamit?</Text>
+        <Text style={styles.title}>Level 6: Week 2 Game Concept</Text>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            May tatlong gamit sa mesa: lapis, ruler, at gunting. Gusto ng bata na ilagay muna ang pinakamahabang gamit sa loob ng kanyang lagayan.
+            This is a placeholder for Week 2 Level 6 game. Please provide the specific game concept and instructions.
           </Text>
           <Text style={styles.question}>
-            Alin ang dapat niyang unahin ilagay?
+            What is the correct answer for this game?
           </Text>
           <Pressable style={styles.startButton} onPress={startQuestion}>
             <Text style={styles.startButtonText}>Simulan ang Tanong</Text>
@@ -600,7 +669,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
       ) : (
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            Alin ang dapat niyang unahin ilagay?
+            What is the correct answer for this game?
           </Text>
           <Text style={styles.choicesText}>Pagpipilian:</Text>
         </View>
@@ -621,7 +690,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
                 zIndex: selectedElement === element.id ? 1000 : 1,
               }
             ]}
-{...debugMode ? createPanResponder(element.id).panHandlers : {}}
+            {...debugMode ? createPanResponder(element.id).panHandlers : {}}
           >
             <Pressable
               style={[
@@ -634,6 +703,7 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -693,8 +763,8 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
           </Text>
           <Text style={styles.resultExplanation}>
             {isCorrect 
-              ? 'Tama! Ang ruler ang pinakamahabang gamit sa mesa.'
-              : 'Ang ruler ang pinakamahabang gamit sa mesa.'
+              ? 'Tama! This is the correct answer.'
+              : 'This is the correct answer.'
             }
           </Text>
           <Pressable style={styles.nextButton} onPress={finishGame}>
@@ -703,14 +773,13 @@ const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
         </Animated.View>
       )}
 
-
       {/* Settings Button */}
       <Pressable 
         style={styles.settingsButton} 
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />
@@ -901,7 +970,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // Removed selectedElement style - no blue border on selection
   disabledElement: {
     opacity: 0.6,
   },
@@ -1165,4 +1233,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Level1Game;
+export default Level6Game;

@@ -24,7 +24,6 @@ interface ElementData {
 }
 
 const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
-  // Optimized state management
   const [score, setScore] = useState(0);
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -35,20 +34,19 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState<string | null>(null);
   
-  // Optimized animation values
   const scaleAnim = useRef(new Animated.Value(1)).current;
   
-  // Optimized animation values
+  // Individual animations for each element
   const elementAnimations = useRef<{[key: number]: Animated.Value}>({
-    1: new Animated.Value(1), // Globe
-    2: new Animated.Value(1), // Ball
-    3: new Animated.Value(1), // Alarm
-    4: new Animated.Value(1), // Apple
+    1: new Animated.Value(1), // Scale
+    2: new Animated.Value(1), // Rock
+    3: new Animated.Value(1), // Book
+    4: new Animated.Value(1), // Feather
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -60,9 +58,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       width: 100,
       height: 100,
       scale: 1,
-      image: require('../../assets/Week 1/globe.png'),
-      name: 'Globo ng daigdig',
-      emoji: '🌍'
+      image: require('../../../assets/Quarter 2/Week 1/globe.png'), // Using Week 1 assets as placeholder
+      name: 'Timbangan',
+      emoji: '⚖️'
     },
     {
       id: 2,
@@ -71,9 +69,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/ball.png'),
-      name: 'Bola',
-      emoji: '🏀'
+      image: require('../../../assets/Quarter 2/Week 1/ball.png'), // Using Week 1 assets as placeholder
+      name: 'Bato',
+      emoji: '🪨'
     },
     {
       id: 3,
@@ -82,9 +80,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/alarm.png'),
-      name: 'Alarm clock',
-      emoji: '⏰'
+      image: require('../../../assets/Quarter 2/Week 1/alarm.png'), // Using Week 1 assets as placeholder
+      name: 'Libro',
+      emoji: '📚'
     },
     {
       id: 4,
@@ -93,15 +91,15 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/mansanas.png'),
-      name: 'Mansanas',
-      emoji: '🍎'
+      image: require('../../../assets/Quarter 2/Week 1/mansanas.png'), // Using Week 1 assets as placeholder
+      name: 'Balahibo',
+      emoji: '🪶'
     }
   ], []);
 
   const [elements, setElements] = useState<ElementData[]>(defaultElements);
 
-  const correctAnswer = 3; // Alarm clock is closest to the globe
+  const correctAnswer = 2; // Rock is the heaviest
 
   // Load saved layout on component mount
   useEffect(() => {
@@ -113,11 +111,10 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
     startElementAnimations();
   }, []);
 
-  // Optimized element animations with cleanup
   const startElementAnimations = useCallback(() => {
     // Create a sequence of animations for each element
     const animations = [
-      // Ball animation - gentle bounce
+      // Element 2 animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[2], {
@@ -133,7 +130,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Alarm animation - subtle pulse
+      // Element 3 animation - subtle pulse
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[3], {
@@ -149,7 +146,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // Apple animation - gentle sway
+      // Element 4 animation - gentle sway
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[4], {
@@ -172,9 +169,8 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         animation.start();
       }, index * 500); // Stagger the start times
     });
-  }, []);
+  }, [elementAnimations]);
 
-  // Optimized PanResponder creation with useCallback
   const createPanResponder = useCallback((elementId: number) => {
     return PanResponder.create({
       onStartShouldSetPanResponder: () => debugMode, // Only allow dragging in debug mode
@@ -332,9 +328,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
     });
   };
 
-
   const handleElementPress = (elementId: number) => {
-    
     // Stop the element's animation and add click animation
     if (elementAnimations[elementId]) {
       elementAnimations[elementId].stopAnimation();
@@ -434,7 +428,6 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
   };
 
   const adjustElementSize = (elementId: number, direction: 'increase' | 'decrease') => {
-    
     setElements(prev => prev.map(element => 
       element.id === elementId 
         ? {
@@ -453,8 +446,6 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
     ));
   };
 
-
-  // Optimized handlers with useCallback
   const startQuestion = useCallback(() => {
     setShowQuestion(true);
   }, []);
@@ -484,9 +475,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         width: 100,
         height: 100,
         scale: 1,
-        image: require('../../assets/Week 1/globe.png'),
-        name: 'Globo ng daigdig',
-        emoji: '🌍'
+        image: require('../../../assets/Quarter 2/Week 1/globe.png'),
+        name: 'Element 1',
+        emoji: '🔵'
       },
       {
         id: 2,
@@ -495,9 +486,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         width: 80,
         height: 80,
         scale: 1,
-        image: require('../../assets/Week 1/ball.png'),
-        name: 'Bola',
-        emoji: '🏀'
+        image: require('../../../assets/Quarter 2/Week 1/ball.png'),
+        name: 'Element 2',
+        emoji: '🔴'
       },
       {
         id: 3,
@@ -506,9 +497,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         width: 80,
         height: 80,
         scale: 1,
-        image: require('../../assets/Week 1/alarm.png'),
-        name: 'Alarm clock',
-        emoji: '⏰'
+        image: require('../../../assets/Quarter 2/Week 1/alarm.png'),
+        name: 'Element 3',
+        emoji: '🟡'
       },
       {
         id: 4,
@@ -517,9 +508,9 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         width: 80,
         height: 80,
         scale: 1,
-        image: require('../../assets/Week 1/mansanas.png'),
-        name: 'Mansanas',
-        emoji: '🍎'
+        image: require('../../../assets/Quarter 2/Week 1/mansanas.png'),
+        name: 'Element 4',
+        emoji: '🟢'
       }
     ]);
   };
@@ -539,7 +530,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       };
       
       // Save to AsyncStorage permanently
-      await AsyncStorage.setItem('level3_layout', JSON.stringify(layoutData));
+      await AsyncStorage.setItem('week2_level3_layout', JSON.stringify(layoutData));
       console.log('Layout saved permanently:', layoutData);
       alert('Layout saved permanently!');
     } catch (error) {
@@ -551,7 +542,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
   const loadSavedLayout = async () => {
     try {
       // Try to load saved layout from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level3_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level3_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -572,7 +563,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
   const loadLayout = async () => {
     try {
       // Load from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level3_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level3_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -588,10 +579,10 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         // Fallback to default layout if no saved data
         const defaultLayout = {
           elements: [
-            { id: 1, x: 50, y: 200, width: 80, height: 80, scale: 1 },
-            { id: 2, x: 200, y: 200, width: 100, height: 80, scale: 1 },
-            { id: 3, x: 350, y: 200, width: 70, height: 80, scale: 1 },
-            { id: 4, x: 150, y: 350, width: 120, height: 100, scale: 1 }
+            { id: 1, x: 200, y: 200, width: 100, height: 100, scale: 1 },
+            { id: 2, x: 50, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 3, x: 350, y: 200, width: 80, height: 80, scale: 1 },
+            { id: 4, x: 200, y: 350, width: 80, height: 80, scale: 1 }
           ]
         };
         
@@ -610,7 +601,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
 
   const clearSavedLayout = async () => {
     try {
-      await AsyncStorage.removeItem('level3_layout');
+      await AsyncStorage.removeItem('week2_level3_layout');
       console.log('Saved layout cleared');
       alert('Saved layout cleared!');
     } catch (error) {
@@ -623,22 +614,22 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel3.png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel3.png')} // Placeholder - will be updated with Week 2 assets
       style={styles.container} 
       resizeMode="cover"
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Level 3: Pinakamalapit sa Globo</Text>
+        <Text style={styles.title}>Level 3: Pinakamabigat na Bagay</Text>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            Nasa gitna ng mesa ang isang Globo ng daigdig. Sa paligid nito ay may tatlong bagay: A - Bola, B - Alarm clock, at C - Mansanas.
+            Nasa gitna ng mesa ang isang timbangan. Sa paligid nito ay may tatlong bagay: A - Bato, B - Libro, at C - Balahibo.
           </Text>
           <Text style={styles.question}>
-            Tingnan ang larawan. Alin sa mga bagay ang pinakamalapit sa Globo ng Daigdig?
+            Tingnan ang larawan. Alin sa mga bagay ang pinakamabigat?
           </Text>
           <Pressable style={styles.startButton} onPress={startQuestion}>
             <Text style={styles.startButtonText}>Simulan ang Tanong</Text>
@@ -647,7 +638,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
       ) : (
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            Tingnan ang larawan. Alin sa mga bagay ang pinakamalapit sa Globo ng Daigdig?
+            Tingnan ang larawan. Alin sa mga bagay ang pinakamabigat?
           </Text>
           <Text style={styles.choicesText}>Pagpipilian:</Text>
         </View>
@@ -668,7 +659,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
                 zIndex: selectedElement === element.id ? 1000 : 1,
               }
             ]}
-{...debugMode ? createPanResponder(element.id).panHandlers : {}}
+            {...debugMode ? createPanResponder(element.id).panHandlers : {}}
           >
             <Pressable
               style={[
@@ -681,6 +672,7 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -740,8 +732,8 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
           </Text>
           <Text style={styles.resultExplanation}>
             {isCorrect 
-              ? 'Tama! Ang Alarm clock ang pinakamalapit sa Globo ng Daigdig.'
-              : 'Ang Alarm clock ang pinakamalapit sa Globo ng Daigdig.'
+              ? 'Tama! This is the correct answer.'
+              : 'This is the correct answer.'
             }
           </Text>
           <Pressable style={styles.nextButton} onPress={finishGame}>
@@ -750,14 +742,13 @@ const Level3Game: React.FC<Level3GameProps> = ({ onComplete, onExit }) => {
         </Animated.View>
       )}
 
-
       {/* Settings Button */}
       <Pressable 
         style={styles.settingsButton} 
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />
@@ -948,7 +939,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // Removed selectedElement style - no blue border on selection
   disabledElement: {
     opacity: 0.6,
   },

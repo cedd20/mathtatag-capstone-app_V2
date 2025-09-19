@@ -5,12 +5,12 @@ import { get, ref } from 'firebase/database';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Dimensions, ImageBackground, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { db } from '../constants/firebaseConfig';
-import Level1Game from './Week 1/Level1Game';
-import Level2Game from './Week 1/Level2Game';
-import Level3Game from './Week 1/Level3Game';
-import Level4Game from './Week 1/Level4Game';
-import Level5Game from './Week 1/Level5Game';
-import Level6Game from './Week 1/Level6Game';
+import Level1Game from './Quarter 2/Week 1/Level1Game';
+import Level2Game from './Quarter 2/Week 1/Level2Game';
+import Level3Game from './Quarter 2/Week 1/Level3Game';
+import Level4Game from './Quarter 2/Week 1/Level4Game';
+import Level5Game from './Quarter 2/Week 1/Level5Game';
+import Level6Game from './Quarter 2/Week 1/Level6Game';
 
 const { width, height } = Dimensions.get('window');
 
@@ -49,17 +49,11 @@ export default function Map1Stages() {
   const [stagePositions, setStagePositions] = useState(STAGES);
   const [draggingStage, setDraggingStage] = useState<number | null>(null);
 
-  // Optimized animation values for each stage - memoized to prevent recreation
-  const stageScales = useMemo(() => 
-    STAGES.map(() => new Animated.Value(1)), 
-    []
-  );
+  // Optimized animation values for each stage - using useRef to prevent recreation
+  const stageScales = useRef(STAGES.map(() => new Animated.Value(1))).current;
   
-  // Memoized result pop animations
-  const resultPops = useMemo(() => 
-    STAGES.map(() => new Animated.Value(0)), 
-    []
-  );
+  // Result pop animations using useRef
+  const resultPops = useRef(STAGES.map(() => new Animated.Value(0))).current;
 
   const [fontsLoaded] = useFonts({
     'LeagueSpartan-Bold': require('../assets/fonts/LeagueSpartan-Bold.ttf'),
@@ -202,7 +196,8 @@ export default function Map1Stages() {
     
     setStageStatus(prev => {
       const newStatus = [...prev];
-      newStatus[levelIndex] = 'correct';
+      // Set status based on score: 100 = correct, anything else = wrong
+      newStatus[levelIndex] = score >= 100 ? 'correct' : 'wrong';
       return newStatus;
     });
     
@@ -288,8 +283,6 @@ export default function Map1Stages() {
 
 
 
-  if (!fontsLoaded) return null;
-
   // Memoized game components for better performance
   const gameComponents = useMemo(() => ({
     0: <Level1Game onComplete={(score) => handleGameComplete(0, score)} onExit={handleGameExit} />,
@@ -299,6 +292,8 @@ export default function Map1Stages() {
     4: <Level5Game onComplete={(score) => handleGameComplete(4, score)} onExit={handleGameExit} />,
     5: <Level6Game onComplete={(score) => handleGameComplete(5, score)} onExit={handleGameExit} />,
   }), [handleGameComplete, handleGameExit]);
+
+  if (!fontsLoaded) return null;
 
   // Render current game if one is active
   if (currentGame !== null) {

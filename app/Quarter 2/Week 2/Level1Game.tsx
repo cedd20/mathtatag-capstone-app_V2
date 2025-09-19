@@ -5,7 +5,7 @@ import { Animated, Dimensions, Image, ImageBackground, PanResponder, Pressable, 
 
 const { width, height } = Dimensions.get('window');
 
-interface Level4GameProps {
+interface Level1GameProps {
   onComplete: (score: number) => void;
   onExit: () => void;
 }
@@ -23,8 +23,7 @@ interface ElementData {
   isSelected?: boolean;
 }
 
-const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
-  // Optimized state management
+const Level1Game: React.FC<Level1GameProps> = ({ onComplete, onExit }) => {
   const [score, setScore] = useState(0);
   const [selectedElement, setSelectedElement] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -35,20 +34,19 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState<string | null>(null);
   
-  // Optimized animation values
   const scaleAnim = useRef(new Animated.Value(1)).current;
   
-  // Optimized animation values
+  // Individual animations for each element
   const elementAnimations = useRef<{[key: number]: Animated.Value}>({
-    1: new Animated.Value(1), // 3 pencils
-    2: new Animated.Value(1), // 2 pencils
-    3: new Animated.Value(1), // 4 pencils
-    4: new Animated.Value(1), // 5 pencils
+    1: new Animated.Value(1), // Feather
+    2: new Animated.Value(1), // Book
+    3: new Animated.Value(1), // Rock
+    4: new Animated.Value(1), // Balloon
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -60,20 +58,20 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/p3.png'),
-      name: 'Tatlong lapis',
-      emoji: '✏️✏️✏️'
+      image: require('../../../assets/Quarter 2/Week 1/lapis.png'), // Using Week 1 assets as placeholder
+      name: 'Feather',
+      emoji: '🪶'
     },
     {
       id: 2,
       x: 200,
       y: 200,
-      width: 80,
+      width: 100,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/p2.png'),
-      name: 'Dalawang lapis',
-      emoji: '✏️✏️'
+      image: require('../../../assets/Quarter 2/Week 1/ruler.png'), // Using Week 1 assets as placeholder
+      name: 'Book',
+      emoji: '📚'
     },
     {
       id: 3,
@@ -82,26 +80,26 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 80,
       scale: 1,
-      image: require('../../assets/Week 1/p4.png'),
-      name: 'Apat na lapis',
-      emoji: '✏️✏️✏️✏️'
+      image: require('../../../assets/Quarter 2/Week 1/gunting.png'), // Using Week 1 assets as placeholder
+      name: 'Rock',
+      emoji: '🪨'
     },
     {
       id: 4,
       x: 150,
       y: 350,
-      width: 80,
-      height: 80,
+      width: 120,
+      height: 100,
       scale: 1,
-      image: require('../../assets/Week 1/p5.png'),
-      name: 'Limang lapis',
-      emoji: '✏️✏️✏️✏️✏️'
+      image: require('../../../assets/Quarter 2/Week 1/pot.png'), // Using Week 1 assets as placeholder
+      name: 'Balloon',
+      emoji: '🎈'
     }
   ], []);
 
   const [elements, setElements] = useState<ElementData[]>(defaultElements);
 
-  const correctAnswer = 4; // 5 pencils is the longest
+  const correctAnswer = 3; // Rock is the heaviest
 
   // Load saved layout on component mount
   useEffect(() => {
@@ -113,11 +111,10 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
     startElementAnimations();
   }, []);
 
-  // Optimized element animations with cleanup
   const startElementAnimations = useCallback(() => {
     // Create a sequence of animations for each element
     const animations = [
-      // 3 pencils animation - gentle bounce
+      // Element 1 animation - gentle bounce
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[1], {
@@ -133,7 +130,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // 2 pencils animation - subtle pulse
+      // Element 2 animation - subtle pulse
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[2], {
@@ -149,7 +146,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
         ])
       ),
       
-      // 4 pencils animation - gentle sway
+      // Element 3 animation - gentle sway
       Animated.loop(
         Animated.sequence([
           Animated.timing(elementAnimations[3], {
@@ -164,22 +161,6 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
           }),
         ])
       ),
-      
-      // 5 pencils animation - gentle bounce
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(elementAnimations[4], {
-            toValue: 1.06,
-            duration: 1600,
-            useNativeDriver: true,
-          }),
-          Animated.timing(elementAnimations[4], {
-            toValue: 1,
-            duration: 1600,
-            useNativeDriver: true,
-          }),
-        ])
-      ),
     ];
 
     // Start all animations with slight delays
@@ -188,9 +169,8 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
         animation.start();
       }, index * 500); // Stagger the start times
     });
-  }, []);
+  }, [elementAnimations]);
 
-  // Optimized PanResponder creation with useCallback
   const createPanResponder = useCallback((elementId: number) => {
     return PanResponder.create({
       onStartShouldSetPanResponder: () => debugMode, // Only allow dragging in debug mode
@@ -247,7 +227,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
                 width: newWidth,
                 height: newHeight,
                 x: Math.max(0, Math.min(width - newWidth, newX)),
-                y: Math.max(0, Math.min(height - newHeight - 50, newY))
+                y: Math.max(0, Math.min(height - newHeight - 200, newY))
               };
             }
             return element;
@@ -259,7 +239,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
               ? {
                   ...element,
                   x: Math.max(0, Math.min(width - element.width, element.x + gestureState.dx)),
-                  y: Math.max(0, Math.min(height - element.height - 50, element.y + gestureState.dy))
+                  y: Math.max(0, Math.min(height - element.height - 200, element.y + gestureState.dy))
                 }
               : element
           ));
@@ -332,7 +312,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
               width: newWidth,
               height: newHeight,
               x: Math.max(0, Math.min(width - newWidth, newX)),
-              y: Math.max(0, Math.min(height - newHeight - 50, newY))
+              y: Math.max(0, Math.min(height - newHeight - 200, newY))
             };
           }
           return element;
@@ -348,9 +328,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
     });
   };
 
-
   const handleElementPress = (elementId: number) => {
-    
     // Stop the element's animation and add click animation
     if (elementAnimations[elementId]) {
       elementAnimations[elementId].stopAnimation();
@@ -412,21 +390,6 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
               }),
             ])
           ).start();
-        } else if (elementId === 4) {
-          Animated.loop(
-            Animated.sequence([
-              Animated.timing(elementAnimations[4], {
-                toValue: 1.06,
-                duration: 1600,
-                useNativeDriver: true,
-              }),
-              Animated.timing(elementAnimations[4], {
-                toValue: 1,
-                duration: 1600,
-                useNativeDriver: true,
-              }),
-            ])
-          ).start();
         }
       });
     }
@@ -465,7 +428,6 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
   };
 
   const adjustElementSize = (elementId: number, direction: 'increase' | 'decrease') => {
-    
     setElements(prev => prev.map(element => 
       element.id === elementId 
         ? {
@@ -484,8 +446,6 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
     ));
   };
 
-
-  // Optimized handlers with useCallback
   const startQuestion = useCallback(() => {
     setShowQuestion(true);
   }, []);
@@ -498,7 +458,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
     onExit();
   }, [onExit]);
 
-  const retryGame = () => {
+  const retryGame = useCallback(() => {
     setScore(0);
     setSelectedElement(null);
     setShowResult(false);
@@ -506,54 +466,9 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
     setShowQuestion(false);
     setShowSettings(false);
     
-    // Reset elements to original positions
-    setElements([
-      {
-        id: 1,
-        x: 50,
-        y: 200,
-        width: 80,
-        height: 80,
-        scale: 1,
-        image: require('../../assets/Week 1/p3.png'),
-        name: 'Tatlong lapis',
-        emoji: '✏️✏️✏️'
-      },
-      {
-        id: 2,
-        x: 200,
-        y: 200,
-        width: 80,
-        height: 80,
-        scale: 1,
-        image: require('../../assets/Week 1/p2.png'),
-        name: 'Dalawang lapis',
-        emoji: '✏️✏️'
-      },
-      {
-        id: 3,
-        x: 350,
-        y: 200,
-        width: 80,
-        height: 80,
-        scale: 1,
-        image: require('../../assets/Week 1/p4.png'),
-        name: 'Apat na lapis',
-        emoji: '✏️✏️✏️✏️'
-      },
-      {
-        id: 4,
-        x: 150,
-        y: 350,
-        width: 80,
-        height: 80,
-        scale: 1,
-        image: require('../../assets/Week 1/p5.png'),
-        name: 'Limang lapis',
-        emoji: '✏️✏️✏️✏️✏️'
-      }
-    ]);
-  };
+    // Reset elements to original positions using memoized defaultElements
+    setElements(defaultElements);
+  }, [defaultElements]);
 
   const saveLayout = async () => {
     try {
@@ -570,7 +485,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
       };
       
       // Save to AsyncStorage permanently
-      await AsyncStorage.setItem('level4_layout', JSON.stringify(layoutData));
+      await AsyncStorage.setItem('week2_level1_layout', JSON.stringify(layoutData));
       console.log('Layout saved permanently:', layoutData);
       alert('Layout saved permanently!');
     } catch (error) {
@@ -582,7 +497,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
   const loadSavedLayout = async () => {
     try {
       // Try to load saved layout from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level4_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level1_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -603,7 +518,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
   const loadLayout = async () => {
     try {
       // Load from AsyncStorage
-      const savedLayout = await AsyncStorage.getItem('level4_layout');
+      const savedLayout = await AsyncStorage.getItem('week2_level1_layout');
       
       if (savedLayout) {
         const layoutData = JSON.parse(savedLayout);
@@ -621,8 +536,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
           elements: [
             { id: 1, x: 50, y: 200, width: 80, height: 80, scale: 1 },
             { id: 2, x: 200, y: 200, width: 80, height: 80, scale: 1 },
-            { id: 3, x: 350, y: 200, width: 80, height: 80, scale: 1 },
-            { id: 4, x: 150, y: 350, width: 80, height: 80, scale: 1 }
+            { id: 3, x: 350, y: 200, width: 80, height: 80, scale: 1 }
           ]
         };
         
@@ -641,7 +555,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
 
   const clearSavedLayout = async () => {
     try {
-      await AsyncStorage.removeItem('level4_layout');
+      await AsyncStorage.removeItem('week2_level1_layout');
       console.log('Saved layout cleared');
       alert('Saved layout cleared!');
     } catch (error) {
@@ -654,22 +568,22 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel4.png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel1 (2).png')} // Placeholder - will be updated with Week 2 assets
       style={styles.container} 
       resizeMode="cover"
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Level 4: Pinakamahabang Set ng Lapis</Text>
+        <Text style={styles.title}>Level 1: Alin ang Pinakamabigat?</Text>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            Nagdugtong si Ana ng ilang lapis para sukatin ang haba ng mesa nila sa bahay. Ngayon ay may apat na set ng lapis na magkaiba ang bilang.
+            May apat na bagay sa mesa: balahibo, libro, bato, at lobo. Gusto ng bata na ilagay muna ang pinakamabigat na bagay sa loob ng kanyang lagayan.
           </Text>
           <Text style={styles.question}>
-            Alin sa mga ito ang pinakamahaba kung ipagdudugtong-dugtong ang mga lapis?
+            Alin ang dapat niyang unahin ilagay?
           </Text>
           <Pressable style={styles.startButton} onPress={startQuestion}>
             <Text style={styles.startButtonText}>Simulan ang Tanong</Text>
@@ -678,7 +592,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
       ) : (
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            Alin sa mga ito ang pinakamahaba kung ipagdudugtong-dugtong ang mga lapis?
+            Alin ang dapat niyang unahin ilagay?
           </Text>
           <Text style={styles.choicesText}>Pagpipilian:</Text>
         </View>
@@ -699,7 +613,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
                 zIndex: selectedElement === element.id ? 1000 : 1,
               }
             ]}
-{...debugMode ? createPanResponder(element.id).panHandlers : {}}
+            {...debugMode ? createPanResponder(element.id).panHandlers : {}}
           >
             <Pressable
               style={[
@@ -712,6 +626,7 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -771,8 +686,8 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
           </Text>
           <Text style={styles.resultExplanation}>
             {isCorrect 
-              ? 'Tama! Ang limang lapis ang pinakamahaba kung ipagdudugtong-dugtong.'
-              : 'Ang limang lapis ang pinakamahaba kung ipagdudugtong-dugtong.'
+              ? 'Tama! This is the correct answer.'
+              : 'This is the correct answer.'
             }
           </Text>
           <Pressable style={styles.nextButton} onPress={finishGame}>
@@ -781,14 +696,13 @@ const Level4Game: React.FC<Level4GameProps> = ({ onComplete, onExit }) => {
         </Animated.View>
       )}
 
-
       {/* Settings Button */}
       <Pressable 
         style={styles.settingsButton} 
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />
@@ -979,7 +893,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // Removed selectedElement style - no blue border on selection
   disabledElement: {
     opacity: 0.6,
   },
@@ -1243,4 +1156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Level4Game;
+export default Level1Game;

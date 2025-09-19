@@ -1,4 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlurView } from 'expo-blur';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { get, onValue, ref, set } from 'firebase/database';
@@ -266,6 +267,26 @@ export default function ParentDashboard() {
   // Quarter/Weeks UI state
   const [selectedQuarter, setSelectedQuarter] = useState<number>(1);
   const [quarterDropdownVisible, setQuarterDropdownVisible] = useState(false);
+
+  // Load selected quarter from AsyncStorage on mount
+  useEffect(() => {
+    const loadSelectedQuarter = async () => {
+      try {
+        const quarter = await AsyncStorage.getItem('selectedQuarter');
+        if (quarter) {
+          setSelectedQuarter(parseInt(quarter));
+        }
+      } catch (error) {
+        console.error('Error loading selected quarter:', error);
+      }
+    };
+    loadSelectedQuarter();
+  }, []);
+
+  // Save selected quarter to AsyncStorage when changed
+  useEffect(() => {
+    AsyncStorage.setItem('selectedQuarter', String(selectedQuarter));
+  }, [selectedQuarter]);
 
   React.useEffect(() => {
     if (!parentId) return;
@@ -971,9 +992,18 @@ export default function ParentDashboard() {
         {/* Home Exercise CTA */}
         <TouchableOpacity
           style={styles.homeExerciseBtn}
-          onPress={() => router.push('/WelcomePage')}
+          onPress={() => {
+            // Route to the correct quarter homepage based on selected quarter
+            const quarterRoutes = {
+              1: '/Quarter1Homepage',
+              2: '/Quarter2Homepage', 
+              3: '/Quarter3Homepage',
+              4: '/Quarter4Homepage'
+            };
+            router.push(quarterRoutes[selectedQuarter as keyof typeof quarterRoutes] as any);
+          }}
         >
-          <Text style={styles.homeExerciseText}>Home Exercise</Text>
+          <Text style={styles.homeExerciseText}>Home Exercise - Quarter {selectedQuarter}</Text>
         </TouchableOpacity>
 
         {/* Combined Quarter Panel: Pre/Post test + Weekly progress */}

@@ -1,12 +1,14 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 export default function WelcomePage() {
   const router = useRouter();
+  const [selectedQuarter, setSelectedQuarter] = useState(1);
   const [fontsLoaded] = useFonts({
     'LeagueSpartan-Bold': require('../assets/fonts/LeagueSpartan-Bold.ttf'),
     'LuckiestGuy-Regular': require('../assets/fonts/LuckiestGuy-Regular.ttf'),
@@ -16,6 +18,21 @@ export default function WelcomePage() {
   const logoScale = useRef(new Animated.Value(1)).current;
   // Slow beating animation for start button
   const startButtonScale = useRef(new Animated.Value(1)).current;
+
+  // Load selected quarter from AsyncStorage
+  useEffect(() => {
+    const loadSelectedQuarter = async () => {
+      try {
+        const quarter = await AsyncStorage.getItem('selectedQuarter');
+        if (quarter) {
+          setSelectedQuarter(parseInt(quarter));
+        }
+      } catch (error) {
+        console.error('Error loading selected quarter:', error);
+      }
+    };
+    loadSelectedQuarter();
+  }, []);
 
   useEffect(() => {
     // Beating animation for logo
@@ -58,9 +75,9 @@ export default function WelcomePage() {
       {/* Quarter Name Display - 3D Effect */}
       <View style={styles.quarterContainer}>
         {/* Background shadow layer */}
-        <Text style={[styles.quarterText, styles.quarterShadow]}>QUARTER 1</Text>
+        <Text style={[styles.quarterText, styles.quarterShadow]}>QUARTER {selectedQuarter}</Text>
         {/* Main text layer */}
-        <Text style={[styles.quarterText, styles.quarterMain]}>QUARTER 1</Text>
+        <Text style={[styles.quarterText, styles.quarterMain]}>QUARTER {selectedQuarter}</Text>
         {/* Highlight layer */}
       </View>
 
@@ -69,7 +86,16 @@ export default function WelcomePage() {
         <Animated.View style={{ transform: [{ scale: startButtonScale }] }}>
           <TouchableOpacity 
             style={styles.startButton}
-            onPress={() => router.push('/LoadingScreen')}
+            onPress={() => {
+              // Route to the correct quarter homepage based on selected quarter
+              const quarterRoutes = {
+                1: '/Quarter1Homepage',
+                2: '/Quarter2Homepage', 
+                3: '/Quarter3Homepage',
+                4: '/Quarter4Homepage'
+              };
+              router.push(quarterRoutes[selectedQuarter as keyof typeof quarterRoutes] as any);
+            }}
             activeOpacity={0.8}
           >
             <Image 

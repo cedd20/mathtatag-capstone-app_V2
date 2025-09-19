@@ -46,8 +46,8 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
   }).current;
 
   const [fontsLoaded] = useFonts({
-    'LeagueSpartan-Bold': require('../../assets/fonts/LeagueSpartan-Bold.ttf'),
-    'LuckiestGuy-Regular': require('../../assets/fonts/LuckiestGuy-Regular.ttf'),
+    'LeagueSpartan-Bold': require('../../../assets/fonts/LeagueSpartan-Bold.ttf'),
+    'LuckiestGuy-Regular': require('../../../assets/fonts/LuckiestGuy-Regular.ttf'),
   });
 
   // Memoized game elements for performance
@@ -59,7 +59,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
       width: 60,
       height: 100,
       scale: 1,
-      image: require('../../assets/Week 1/b1.png'),
+      image: require('../../../assets/Quarter 2/Week 1/b1.png'),
       name: 'Aklat A',
       emoji: '📘'
     },
@@ -70,7 +70,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
       width: 80,
       height: 100,
       scale: 1,
-      image: require('../../assets/Week 1/b2.png'),
+      image: require('../../../assets/Quarter 2/Week 1/b2.png'),
       name: 'Aklat B',
       emoji: '📙'
     },
@@ -81,7 +81,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
       width: 100,
       height: 100,
       scale: 1,
-      image: require('../../assets/Week 1/b3.png'),
+      image: require('../../../assets/Quarter 2/Week 1/b3.png'),
       name: 'Aklat C',
       emoji: '📕'
     }
@@ -472,7 +472,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
         width: 60,
         height: 100,
         scale: 1,
-        image: require('../../assets/Week 1/b1.png'),
+        image: require('../../../assets/Quarter 2/Week 1/b1.png'),
         name: 'Aklat A',
         emoji: '📘'
       },
@@ -483,7 +483,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
         width: 80,
         height: 100,
         scale: 1,
-        image: require('../../assets/Week 1/b2.png'),
+        image: require('../../../assets/Quarter 2/Week 1/b2.png'),
         name: 'Aklat B',
         emoji: '📙'
       },
@@ -494,7 +494,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
         width: 100,
         height: 100,
         scale: 1,
-        image: require('../../assets/Week 1/b3.png'),
+        image: require('../../../assets/Quarter 2/Week 1/b3.png'),
         name: 'Aklat C',
         emoji: '📕'
       }
@@ -600,7 +600,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/Week 1/bgLevel5.png')} 
+      source={require('../../../assets/Quarter 2/Week 1/bgLevel5.png')} 
       style={styles.container} 
       resizeMode="cover"
     >
@@ -612,7 +612,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
       {!showQuestion ? (
         <View style={styles.instructionContainer}>
           <Text style={styles.instruction}>
-            Si Ben ay nag-aayos ng kanyang mga aklat sa bookshelf. May tatlong aklat siyang nakita: A, B, at C. Bawat isa ay may iba't ibang kapal.
+            Si Ben ay nag-aayos ng kanyang mga aklat sa bookshelf. May tatlong aklat siyang nakita: A, B, at C. Bawat isa ay may iba&apos;t ibang kapal.
           </Text>
           <Text style={styles.question}>
             Tulongan si Ben! Alin kaya sa mga aklat ang may pinakamaraming pahina o ang pinakamakapal?
@@ -658,6 +658,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
               ]}
               onPress={() => handleElementPress(element.id)}
               disabled={!showQuestion && !debugMode}
+              hitSlop={{ top: -20, bottom: -20, left: -20, right: -20 }}
             >
               <Image
                 source={element.image}
@@ -734,7 +735,7 @@ const Level5Game: React.FC<Level5GameProps> = ({ onComplete, onExit }) => {
         onPress={() => setShowSettings(!showSettings)}
       >
         <Image
-          source={require('../../assets/game pngs/settings.png')}
+          source={require('../../../assets/game pngs/settings.png')}
           style={styles.settingsButtonImage}
           resizeMode="contain"
         />

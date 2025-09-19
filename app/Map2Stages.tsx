@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { get, ref } from 'firebase/database';
 import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Image, ImageBackground, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { get, ref } from 'firebase/database';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, ImageBackground, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { db } from '../constants/firebaseConfig';
 
 const { width, height } = Dimensions.get('window');
